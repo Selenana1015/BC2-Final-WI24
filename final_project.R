@@ -61,3 +61,7 @@ world_heritage <- data.frame(
 # create new column that shows the first letter in the National Park
 combined_dy <- combined_dy %>%
   mutate(letter = substr(title, 1, 1))
+
+average_visitors_by_letter <- combined_dy %>%
+  group_by(letter) %>%
+  summarise(average_visitors = mean(visitors, na.rm = TRUE))
