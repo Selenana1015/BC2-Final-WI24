@@ -20,19 +20,8 @@ combined_dy <-  national_ana %>%
 # may be delete some columns
 combined_dy <- combined_dy %>%
   select(-c("description"))
-# combined_dy <- combined_dy %>% # second try 
-#   select(-c(`description`,
-#             `image$url`,
-#             `image$attribution`,
-#             `image$attribution_url`,
-#             `States`,
-#             `X0`))
-
-# Note - your summarization table does not need to be exported to a csv file, 
-#you just need to have code that create this data frame. 
 
 
-# typeof(combined_dy$visitors)
 
 
 # change character to number
@@ -53,6 +42,10 @@ typeof(combined_dy$coordinates) # these are all list
 # each row compare visiter number with mean
 combined_dy <- combined_dy %>%
   mutate(above_below_mean = ifelse(visitors > mean_np_visiter, "Above Mean", "Below Mean"))
+
+sum_visiter <- sum(combined_dy$visitors)
+combined_dy <- combined_dy %>%
+  mutate(percentage = (visitors/sum_visiter) * 100)
 # requirement -  Must create at least one new categorical variable
 
 # create a dataframe that contained national park is world heritage site
