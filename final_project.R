@@ -57,3 +57,7 @@ world_heritage <- data.frame(
                   "Visiter" = world_heritage_dy$visitors) # clear version
 
 # requirement - Must create at least one summarization data frame
+
+# create new column that shows the first letter in the National Park
+combined_dy <- combined_dy %>%
+  mutate(letter = substr(title, 1, 1))
