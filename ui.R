@@ -74,17 +74,36 @@ viz_1_sidebar <- sidebarPanel(
 )
 
 viz_1_main_panel <- mainPanel(
-  h2("Visitor Percentage by National Park"),
-  plotlyOutput(outputId = "park_Visitor_Percentage_Plot"),
-  img(src = "https://www.usatoday.com/gcdn/authoring/authoring-images/2023/08/25/USAT/70680544007-27457643391-2-d-4-b-57-aa-50-k.jpeg", width = "50%"),
-  p()
+  # h2("Visitor Percentage by National Park"),
+  # plotlyOutput(outputId = "park_Visitor_Percentage_Plot"),
+  # img(src = "https://www.usatoday.com/gcdn/authoring/authoring-images/2023/08/25/USAT/70680544007-27457643391-2-d-4-b-57-aa-50-k.jpeg", width = "50%"),
+  # p(),
+  # 
+  # textInput(inputId = "National Park Name",
+  #           label = "Park Name")
   
+  h2("Visitor Percentage by National Park"),
+  
+  fluidRow(
+    column(width = 8,
+           plotlyOutput(outputId = "park_Visitor_Percentage_Plot"),
+           plotlyOutput(outputId = "park_Visitor_Percentage_Filter"),
+           img(src = "https://www.usatoday.com/gcdn/authoring/authoring-images/2023/08/25/USAT/70680544007-27457643391-2-d-4-b-57-aa-50-k.jpeg", width = "100%"),
+           p()
+    ),
+    column(width = 4,
+           textInput(inputId = "National_Park_Name", label = "Park Name (Type exactly the name and it will show you the percentage)"),
+           # If you want a checkbox instead, you could use something like:
+           # checkboxInput(inputId = "someCheckboxId", label = "Some Checkbox Label", value = TRUE)
+           #plotlyOutput(outputId = "results")
+    )
+  )
 )
 
 viz_1_tab <- tabPanel("Visitor Percentage Analysis",
   sidebarLayout(
     viz_1_sidebar,
-    viz_1_main_panel,
+    viz_1_main_panel
    
   )
 )
