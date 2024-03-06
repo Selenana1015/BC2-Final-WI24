@@ -8,12 +8,22 @@ server <- function(input, output){
   
   # interactive 1 
   output$park_Visitor_Percentage_Plot <- renderPlotly({
+    
     # Prepare the pie chart data. Assuming 'combined_dy' is your dataset variable name.
     p <- plot_ly(combined_dy, labels = ~title, values = ~percentage, type = 'pie',
                  textinfo = 'none', insidetextorientation = 'radial') %>%
       layout(title = "Visitor Percentage by National Park")
+
+  })
+  
+  output$park_Visitor_Percentage_Filter <- renderPlotly({
+      filter_dy <- combined_dy %>%
+        filter(title == input$National_Park_Name)
+      
+    p <- plot_ly(filter_dy, labels = ~title, values = ~percentage, type = 'pie',
+                 textinfo = 'none', insidetextorientation = 'radial') %>%
+      layout(title = "Visitor Percentage by National Park")
     
-    # Return the plotly object for rendering
   })
   
   # interactive 2
