@@ -1,18 +1,21 @@
 # Final Project - data wrangling 
 # Natoinal park
-
 library(dplyr)
 library(stringr)
 library(testthat)
 library(jsonlite)
+library(ggplot2)
+library("plotly")
+library(shiny)
+library(leaflet)
 
 national_park_name <- read.csv("national_parks.csv")
 national_ana <- fromJSON("https://query.data.world/s/mfrcsythc5dh53b4dahsm2a37j6rjn?dws=00000") # ana- analysis
 
 # change column title
 national_park_name <- national_park_name %>%
-                       rename( "Name" = "Acadia" )
-                        
+  rename( "Name" = "Acadia" )
+
 # join two dataset
 combined_dy <-  national_ana %>%
   left_join(national_park_name,by = c("title" = "Name"))
@@ -26,7 +29,7 @@ combined_dy <- combined_dy %>%
 
 # change character to number
 combined_dy <- combined_dy %>%
-                mutate(visitors = as.numeric(gsub(",", "", combined_dy$visitors)))
+  mutate(visitors = as.numeric(gsub(",", "", combined_dy$visitors)))
 max_visiter <- max(combined_dy$visitors)
 min_visiter <- min(combined_dy$visitors)
 mean_np_visiter <- mean(combined_dy$visitors) # visiter 
@@ -50,11 +53,11 @@ combined_dy <- combined_dy %>%
 
 # create a dataframe that contained national park is world heritage site
 world_heritage_dy <- combined_dy %>%
-                      filter(world_heritage_site == TRUE)
+  filter(world_heritage_site == TRUE)
 world_heritage <- data.frame(
-                  "National Park Name" = world_heritage_dy$title,
-                  "Area" = world_heritage_dy$area,
-                  "Visiter" = world_heritage_dy$visitors) # clear version
+  "National Park Name" = world_heritage_dy$title,
+  "Area" = world_heritage_dy$area,
+  "Visiter" = world_heritage_dy$visitors) # clear version
 
 # requirement - Must create at least one summarization data frame
 
@@ -65,3 +68,72 @@ combined_dy <- combined_dy %>%
 average_visitors_by_letter <- combined_dy %>%
   group_by(letter) %>%
   summarise(average_visitors = mean(visitors, na.rm = TRUE))
+
+
+
+
+# mattrew 
+#The geographic center of the 48 contiguous states according to Wikipedia
+center_usa <- c(latitude = 39.50, longitude = -98.35)
+
+combined_dy <- combined_dy %>%
+  mutate(latitude = combined_dy$coordinates$latitude,
+         longitude = combined_dy$coordinates$longitude)
+#group each nation park into one of the four regions
+combined_dy <- combined_dy %>%
+  mutate(region = ifelse(latitude >= center_usa["latitude"] & longitude <= center_usa["longitude"], "Northwest",
+                         ifelse(latitude >= center_usa["latitude"] & longitude > center_usa["longitude"], "Northeast",
+                                ifelse(latitude < center_usa["latitude"] & longitude <= center_usa["longitude"], "Southwest",
+                                       ifelse(latitude < center_usa["latitude"] & longitude > center_usa["longitude"], "Southeast",
+                                              "Unknown")))))
+
+
+
+region_visitor_counts <- combined_dy %>%
+  group_by(region) %>%
+  summarize(visitors_number = sum(visitors, na.rm = TRUE))
+
+avg_visitors <- combined_dy %>%
+  group_by(region) %>%
+  summarize(avg_visitors = mean(visitors))
+
+combined_dy <- merge(combined_dy, avg_visitors, by = "region")
+
+region_df <- merge(region_visitor_counts, avg_visitors, by = "region")
+
+park_counts <- combined_dy %>%
+  group_by(region) %>%
+  summarise(total_parks = n())
+
+region_df <- region_df %>%
+  left_join(park_counts, by = "region")
+
+#applying fitting colors to each region
+region_colors <- c("Northwest" = "lightblue", "Northeast" = "darkgreen", 
+                   "Southwest" = "gold", "Southeast" = "red")
+
+#arrange the bars to be in descending order
+visitor_counts <- region_df %>%
+  arrange(desc(visitors_number))
+
+visitor_counts$region <- factor(visitor_counts$region, levels = visitor_counts$region)
+
+region_plot <- ggplot(visitor_counts, aes(x = region, y = visitors_number/1000000, fill = region)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = region_colors) +  
+  labs(title = "Total National Park Visitors in Each Region of the United States",
+       x = "Region",
+       y = "Visitors (in millions)") +
+  theme_minimal()
+
+
+region_plot2 <- ggplot(avg_visitors, aes(x = region, y = avg_visitors/1000000, fill = region)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = region_colors) +
+  labs(title = "Average Visitor Count per National Park by Region",
+       x = "Region",
+       y = "Average Visitor Count") +
+  theme_minimal()
+
+ggplotly(region_plot)
+ggplotly(region_plot2)
