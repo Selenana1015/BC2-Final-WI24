@@ -45,14 +45,20 @@ server <- function(input, output){
   })
   
   #interactive 3
-  output$final_plot <- renderPlotly({
+output$final_plot <- renderPlotly({
     final_plot <- ggplot(average_visitors_by_letter)+
       geom_col(mapping = aes(
         x = letter,
         y = average_visitors, 
         fill = letter))
-    
     return(ggplotly(final_plot))
+  })
+  output$choice <- renderText({
+    ch <- if (input$option == "< 4 Parks"){
+      print(avg_4_under)
+    } else{
+      print(avg_4_plus)
+    }
   })
   
   
