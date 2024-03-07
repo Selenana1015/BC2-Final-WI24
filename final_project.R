@@ -61,13 +61,53 @@ world_heritage <- data.frame(
 
 # requirement - Must create at least one summarization data frame
 
-# create new column that shows the first letter in the National Park
+# ryan
 combined_dy <- combined_dy %>%
   mutate(letter = substr(title, 1, 1))
 
 average_visitors_by_letter <- combined_dy %>%
   group_by(letter) %>%
   summarise(average_visitors = mean(visitors, na.rm = TRUE))
+park_count_by_letter <- combined_dy %>%
+  group_by(letter) %>%
+  summarise(park_count = n_distinct(title))
+
+letters_with_more_than_3_parks <- park_count_by_letter %>%
+  filter(park_count > 3)
+
+letters_more_than_3 <- letters_with_more_than_3_parks$letter
+
+combined_dy_filtered <- combined_dy %>%
+  filter(letter %in% letters_more_than_3)
+
+average_visitors_for_more_than_3_parks <- combined_dy_filtered %>%
+  group_by(letter) %>%
+  summarise(average_visitors = mean(visitors, na.rm = TRUE))
+
+print(average_visitors_for_more_than_3_parks)
+avg_4_plus <- sum(average_visitors_for_more_than_3_parks$average_visitors)/length(average_visitors_for_more_than_3_parks$letter)
+print(avg_4_plus)
+
+
+park_count_by_letter <- combined_dy %>%
+  group_by(letter) %>%
+  summarise(park_count = n_distinct(title))
+
+letters_with_less_than_4_parks <- park_count_by_letter %>%
+  filter(park_count < 4)
+
+letters_less_than_4 <- letters_with_less_than_4_parks$letter
+
+combined_dy_filtered <- combined_dy %>%
+  filter(letter %in% letters_less_than_4)
+
+average_visitors_for_less_than_4_parks <- combined_dy_filtered %>%
+  group_by(letter) %>%
+  summarise(average_visitors = mean(visitors, na.rm = TRUE))
+
+print(average_visitors_for_less_than_4_parks)
+avg_4_under <- sum(average_visitors_for_less_than_4_parks$average_visitors)/length(average_visitors_for_less_than_4_parks$letter)
+print(avg_4_under)
 
 
 
