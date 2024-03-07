@@ -137,21 +137,25 @@ viz_3_sidebar <- sidebarPanel(
   h1("National Parks Average Visitors by Letter", align="center"),
   # p("Ryan Tandy", align="center"),
   # sidebarLayout(
-  #   sidebarPanel(
-                  postion='left',
-                 h3("First Letter and Average Visitors Analysis"),
-                 p("The bar graph shows the average amount of visitors per the first letter.",
-                   "The y-axis on the graph makes it difficult to know the actual value,",
-                   "but if you hover over the bars themselves you will see the correct number."),
-                 p("As we can see in the graph, state parks that start with 'O', 'Y', and",
-                   "'Z' have the highest average visitor count. This is because those letters",
-                   "have fewer total National Parks, for example the only National Park that",
-                   "starts with 'Z' is Zion National Park"),
-                 p("On the contrary, the letters with a more average visitor count",
-                   "tends to be the ones with more total National Parks, like 'G'",
-                   "which has 9 total National Parks."),
+  #   sidebarPanel(width = 4,
+              h3("First Letter and Average Visitors Analysis"),
+              p("The bar graph shows the average amount of visitors per the first letter.",
+                "The y-axis on the graph makes it difficult to know the actual value,",
+                "but if you hover over the bars themselves you will see the correct number."),
+              p("As we can see in the graph, state parks that start with 'O', 'Y', and",
+                "'Z' have the highest average visitor count. This is because those letters",
+                "have fewer total National Parks, for example the only National Park that",
+                "starts with 'Z' is Zion National Park"),
+              p("On the contrary, the letters with a more average visitor count",
+                "tends to be the ones with more total National Parks, like 'G'",
+                "which has 9 total National Parks."),
+                checkboxGroupInput("option",
+                                   label = ("Average visitors for parks with 4+ parks vs < 4."),
+                                    choices = c("4+ Parks", "< 4 Parks"),
+                                    selected = "4+ Parks"),
+                textOutput(outputId = "choice"))
     
-)
+
 
 viz_3_main_panel <- mainPanel(
   h2('Average visitors per letter'),
