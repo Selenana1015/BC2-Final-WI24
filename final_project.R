@@ -175,5 +175,3 @@ region_plot2 <- ggplot(avg_visitors, aes(x = region, y = avg_visitors/1000000, f
 
 ggplotly(region_plot)
 ggplotly(region_plot2)
-
-rsconnect::setAccountInfo(name='mcyc831', token='802F510EC1465DA1912183E283F91D77', secret='hzm3z6uxKH2X+6aSEivtQm7F2qnnPBdlITCJbb9o')
