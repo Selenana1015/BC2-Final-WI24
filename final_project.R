@@ -1,4 +1,4 @@
-# Final Project - data wrangling 
+# Final Project
 # Natoinal park
 library(dplyr)
 library(stringr)
@@ -8,6 +8,7 @@ library(ggplot2)
 library("plotly")
 library(shiny)
 library(leaflet)
+library(rsconnect)
 
 national_park_name <- read.csv("national_parks.csv")
 national_ana <- fromJSON("https://query.data.world/s/mfrcsythc5dh53b4dahsm2a37j6rjn?dws=00000") # ana- analysis
@@ -23,9 +24,6 @@ combined_dy <-  national_ana %>%
 # may be delete some columns
 combined_dy <- combined_dy %>%
   select(-c("description"))
-
-
-
 
 # change character to number
 combined_dy <- combined_dy %>%
@@ -112,7 +110,7 @@ print(avg_4_under)
 
 
 
-# mattrew 
+# matthew 
 #The geographic center of the 48 contiguous states according to Wikipedia
 center_usa <- c(latitude = 39.50, longitude = -98.35)
 
@@ -177,3 +175,5 @@ region_plot2 <- ggplot(avg_visitors, aes(x = region, y = avg_visitors/1000000, f
 
 ggplotly(region_plot)
 ggplotly(region_plot2)
+
+rsconnect::setAccountInfo(name='mcyc831', token='802F510EC1465DA1912183E283F91D77', secret='hzm3z6uxKH2X+6aSEivtQm7F2qnnPBdlITCJbb9o')
